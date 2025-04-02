@@ -1,4 +1,4 @@
-import { Form, ActionPanel, Action, showToast, Toast, Clipboard } from "@raycast/api";
+import { Form, ActionPanel, Action, showToast, Toast, Clipboard, closeMainWindow } from "@raycast/api";
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -136,6 +136,7 @@ export default function Command() {
                   style: Toast.Style.Success,
                   title: "Result copied",
                 });
+                closeMainWindow();
               }}
             />
           )}
