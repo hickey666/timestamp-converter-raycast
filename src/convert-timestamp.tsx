@@ -49,23 +49,6 @@ const TIMEZONES = [
 
 type TimeUnit = "s" | "ms";
 
-// 自定义防抖 hook
-function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
-}
-
 export default function Command() {
   const [result, setResult] = useState<string>("");
   const [timestampInput, setTimestampInput] = useState("");
@@ -74,10 +57,6 @@ export default function Command() {
   const [currentTimestamp, setCurrentTimestamp] = useState("");
   const [timeUnit, setTimeUnit] = useState<TimeUnit>("s");
   const [conversionMode, setConversionMode] = useState<"timestamp" | "date">("timestamp");
-
-  // 使用防抖优化输入
-  const debouncedTimestampInput = useDebounce(timestampInput, 300);
-  const debouncedDateInput = useDebounce(dateInput, 300);
 
   // 更新当前时间戳
   useEffect(() => {
@@ -201,7 +180,7 @@ export default function Command() {
         value={currentTimestamp}
         info="Press ⌘ + ⇧ + C to copy current timestamp"
         autoFocus
-        onChange={() => { }}
+        onChange={() => {}}
       />
 
       <Form.Separator />
