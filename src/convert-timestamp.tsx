@@ -126,24 +126,22 @@ export default function Command() {
     }
   };
 
-  // 当输入值改变时更新结果
+  // 当输入值或相关状态改变时更新结果
   useEffect(() => {
-    if (conversionMode === "timestamp" && debouncedTimestampInput) {
-      const dateStr = timestampToDate(debouncedTimestampInput, selectedTimezone);
+    if (conversionMode === "timestamp" && timestampInput) {
+      // 如果是时间戳转日期，重新转换
+      const dateStr = timestampToDate(timestampInput, selectedTimezone);
       if (dateStr) {
         setResult(dateStr);
       }
-    }
-  }, [debouncedTimestampInput, selectedTimezone, timeUnit, conversionMode]);
-
-  useEffect(() => {
-    if (conversionMode === "date" && debouncedDateInput) {
-      const timestamp = dateToTimestamp(debouncedDateInput, selectedTimezone);
+    } else if (conversionMode === "date" && dateInput) {
+      // 如果是日期转时间戳，重新转换
+      const timestamp = dateToTimestamp(dateInput, selectedTimezone);
       if (timestamp) {
         setResult(timestamp);
       }
     }
-  }, [debouncedDateInput, selectedTimezone, timeUnit, conversionMode]);
+  }, [timeUnit, selectedTimezone, conversionMode, timestampInput, dateInput]); // 监听所有相关依赖
 
   return (
     <Form
@@ -203,7 +201,7 @@ export default function Command() {
         value={currentTimestamp}
         info="Press ⌘ + ⇧ + C to copy current timestamp"
         autoFocus
-        onChange={() => {}}
+        onChange={() => { }}
       />
 
       <Form.Separator />
