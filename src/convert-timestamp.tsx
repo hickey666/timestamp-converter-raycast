@@ -1,5 +1,5 @@
 import { Form, ActionPanel, Action, showToast, Toast, Clipboard, closeMainWindow } from "@raycast/api";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -203,7 +203,7 @@ export default function Command() {
         value={currentTimestamp}
         info="Press ⌘ + ⇧ + C to copy current timestamp"
         autoFocus
-        onChange={() => { }}
+        onChange={() => {}}
       />
 
       <Form.Separator />
