@@ -1,5 +1,5 @@
 import { Form, ActionPanel, Action, showToast, Toast, Clipboard, closeMainWindow } from "@raycast/api";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -49,6 +49,23 @@ const TIMEZONES = [
 
 type TimeUnit = "s" | "ms";
 
+// 自定义防抖 hook
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
 export default function Command() {
   const [result, setResult] = useState<string>("");
   const [timestampInput, setTimestampInput] = useState("");
@@ -57,6 +74,10 @@ export default function Command() {
   const [currentTimestamp, setCurrentTimestamp] = useState("");
   const [timeUnit, setTimeUnit] = useState<TimeUnit>("s");
   const [conversionMode, setConversionMode] = useState<"timestamp" | "date">("timestamp");
+
+  // 使用防抖优化输入
+  const debouncedTimestampInput = useDebounce(timestampInput, 300);
+  const debouncedDateInput = useDebounce(dateInput, 300);
 
   // 更新当前时间戳
   useEffect(() => {
@@ -105,22 +126,24 @@ export default function Command() {
     }
   };
 
-  // 当时间单位改变时更新结果
+  // 当输入值改变时更新结果
   useEffect(() => {
-    if (conversionMode === "timestamp" && timestampInput) {
-      // 如果是时间戳转日期，重新转换
-      const dateStr = timestampToDate(timestampInput, selectedTimezone);
+    if (conversionMode === "timestamp" && debouncedTimestampInput) {
+      const dateStr = timestampToDate(debouncedTimestampInput, selectedTimezone);
       if (dateStr) {
         setResult(dateStr);
       }
-    } else if (conversionMode === "date" && dateInput) {
-      // 如果是日期转时间戳，重新转换
-      const timestamp = dateToTimestamp(dateInput, selectedTimezone);
+    }
+  }, [debouncedTimestampInput, selectedTimezone, timeUnit, conversionMode]);
+
+  useEffect(() => {
+    if (conversionMode === "date" && debouncedDateInput) {
+      const timestamp = dateToTimestamp(debouncedDateInput, selectedTimezone);
       if (timestamp) {
         setResult(timestamp);
       }
     }
-  }, [timeUnit]); // 监听时间单位的变化
+  }, [debouncedDateInput, selectedTimezone, timeUnit, conversionMode]);
 
   return (
     <Form
@@ -180,7 +203,7 @@ export default function Command() {
         value={currentTimestamp}
         info="Press ⌘ + ⇧ + C to copy current timestamp"
         autoFocus
-        onChange={() => {}}
+        onChange={() => { }}
       />
 
       <Form.Separator />
@@ -206,10 +229,6 @@ export default function Command() {
         onChange={(value) => {
           setTimestampInput(value);
           setConversionMode("timestamp");
-          const dateStr = timestampToDate(value, selectedTimezone);
-          if (dateStr) {
-            setResult(dateStr);
-          }
         }}
       />
 
@@ -224,10 +243,6 @@ export default function Command() {
         onChange={(value) => {
           setDateInput(value);
           setConversionMode("date");
-          const timestamp = dateToTimestamp(value, selectedTimezone);
-          if (timestamp) {
-            setResult(timestamp);
-          }
         }}
       />
 

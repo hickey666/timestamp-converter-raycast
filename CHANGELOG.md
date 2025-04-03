@@ -1,6 +1,6 @@
 # Changelog
 
-## [Initial Version] - 2025-04-01
+## [Initial Version] - {PR_MERGE_DATE}
 
 - Initial version code
 - Support converting between timestamp and datetime
