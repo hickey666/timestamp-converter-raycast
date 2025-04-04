@@ -21,7 +21,7 @@ The main interface provides a clean and intuitive layout:
 - Bidirectional conversion between timestamp and datetime
 - Clear result display with copy functionality
 
-![Main Interface](./metadata/main-interface.png)
+![Main Interface](./assets/main-interface.png) 
 
 ## Usage
 
