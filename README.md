@@ -21,7 +21,15 @@ The main interface provides a clean and intuitive layout:
 - Bidirectional conversion between timestamp and datetime
 - Clear result display with copy functionality
 
-![Main Interface](./assets/main-interface.png) 
+![Main Interface](./metadata/main-interface.png) 
+
+The datetime conversion interface:
+- Input datetime in YYYY-MM-DD HH:mm:ss format
+- Select timezone from the dropdown
+- Get instant timestamp conversion results
+- Copy results with keyboard shortcuts
+
+![Datetime Conversion](./metadata/datetime.png)
 
 ## Usage
 
